@@ -1,0 +1,22 @@
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td background="http://${host}:${port}/template-3.png" bgcolor="#7bceeb" valign="top" style="background-repeat:no-repeat;height: 800px;">
+      <!--[if gte mso 9]>
+      <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:600;">
+        <v:fill type="tile" src="http://${host}:${port}/template-3.jpg" color="#7bceeb" />
+        <v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0">
+      <![endif]-->
+      <div style="width: 100%;">
+	      	<div style="width: 30%; margin: 5% 0 0 10%;">
+	      		<h2>Dear ${name} </h2>
+				<img src=${picUrl} style="height: 200px; width: 200px;">
+			</div>
+      </div>
+      <!--[if gte mso 9]>
+        </v:textbox>
+      </v:rect>
+      <![endif]-->
+    </td>
+  </tr>
+</table>
+
