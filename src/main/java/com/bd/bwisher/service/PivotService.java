@@ -57,9 +57,9 @@ public class PivotService {
 			List<BirthdayEmail> employees = new ArrayList<BirthdayEmail>();
 			BirthdayEmail birthdayEmail = new BirthdayEmail();
 			//birthdayEmail.setEMAIL(jsonNode.get("EMAIL").asText());
-			birthdayEmail.setEMAIL("deepak.garg@impetus.co.in");
+			birthdayEmail.setEMAIL("sunil.gupta@impetus.co.in");
 			birthdayEmail.setNAME("Sunil");
-			birthdayEmail.setIMGURL("https://pivot.impetus.co.in/digite/upload/deepak.garg.jpg");
+			birthdayEmail.setIMGURL("https://pivot.impetus.co.in/digite/upload/skgupta.jpg");
 			birthdayEmail.setSUBJECT("Birthday");
 			employees.add(birthdayEmail);
 			return employees;

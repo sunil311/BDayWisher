@@ -1,6 +1,8 @@
 package com.bd;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -19,6 +21,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.bd.bwisher.beans.config.QuartzProperties;
+import com.bd.bwisher.helper.BDayWisherProperties;
 import com.bd.bwisher.quartz.EmailSenderJob;
 import com.bd.exceptions.BWisherException;
 
@@ -26,50 +29,46 @@ import com.bd.exceptions.BWisherException;
 @ComponentScan(basePackages = { "com.bd" })
 public class BirthDayWisher {
 
-	// private static final Logger logger =
-	// Logger.getLogger(BirthDayWisher.class);
-	static Logger logger = LoggerFactory.getLogger(BirthDayWisher.class);
+    // private static final Logger logger =
+    // Logger.getLogger(BirthDayWisher.class);
+    static Logger logger = LoggerFactory.getLogger(BirthDayWisher.class);
 
-	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(
-				BirthDayWisher.class, args);
-		QuartzProperties quartzProperties = context
-				.getBean(QuartzProperties.class);
-		logger.debug("quartz properties" + quartzProperties);
-		try {
-			ScheduleJob(quartzProperties);
-		} catch (Exception e) {
-			throw new BWisherException(e);
-		}
-	}
+    public static void main(String[] args) {
+        try {
+            loadProperties();
+            ConfigurableApplicationContext context = SpringApplication.run(BirthDayWisher.class, args);
+            QuartzProperties quartzProperties = context.getBean(QuartzProperties.class);
+            logger.debug("quartz properties" + quartzProperties);
+            ScheduleJob(quartzProperties);
+        } catch (Exception e) {
+            throw new BWisherException(e);
+        }
+    }
 
-	/**
-	 * Schedule Quartz job for running on a regular interval, quartz expression
-	 * will be picked from bogdata.quartz.properties file placed in class path.
-	 * 
-	 * @param quartzProperties
-	 * @throws SchedulerException
-	 * @throws InterruptedException
-	 */
-	private static void ScheduleJob(QuartzProperties quartzProperties)
-			throws SchedulerException, InterruptedException {
-		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-		Scheduler sched = schedulerFactory.getScheduler();
-		JobDetail job = JobBuilder
-				.newJob(EmailSenderJob.class)
-				.withIdentity(quartzProperties.getJobName(),
-						quartzProperties.getGroupName()).build();
-		Trigger trigger = TriggerBuilder
-				.newTrigger()
-				.withIdentity(quartzProperties.getTriggerName(),
-						quartzProperties.getGroupName())
-				.withSchedule(
-						CronScheduleBuilder.cronSchedule(quartzProperties
-								.getCronExpression())).startAt(new Date())
-				.build();
+    private static void loadProperties() throws IOException {
+        Properties properties = new Properties();
+        properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("mail/smtp.properties"));
+        properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("mail/velocity.properties"));
+        properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("bday.properties"));
+        BDayWisherProperties.properties = properties;
 
-		sched.scheduleJob(job, trigger);
-		sched.start();
-		Thread.sleep(90L * 1000L);
-	}
+    }
+
+    /** Schedule Quartz job for running on a regular interval, quartz expression will be picked from bogdata.quartz.properties file placed in class
+     * path.
+     * 
+     * @param quartzProperties
+     * @throws SchedulerException
+     * @throws InterruptedException */
+    private static void ScheduleJob(QuartzProperties quartzProperties) throws SchedulerException, InterruptedException {
+        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+        Scheduler sched = schedulerFactory.getScheduler();
+        JobDetail job = JobBuilder.newJob(EmailSenderJob.class).withIdentity(quartzProperties.getJobName(), quartzProperties.getGroupName()).build();
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(quartzProperties.getTriggerName(), quartzProperties.getGroupName())
+                .withSchedule(CronScheduleBuilder.cronSchedule(quartzProperties.getCronExpression())).startAt(new Date()).build();
+
+        sched.scheduleJob(job, trigger);
+        sched.start();
+        Thread.sleep(90L * 1000L);
+    }
 }
