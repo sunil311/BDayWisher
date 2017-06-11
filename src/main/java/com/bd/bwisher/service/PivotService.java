@@ -5,29 +5,22 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import java.util.Properties;
 
 import com.bd.bwisher.beans.BirthdayEmail;
-import com.bd.bwisher.beans.config.BDayConfiguration;
+import com.bd.bwisher.helper.BDayWisherProperties;
 import com.bd.exceptions.BWisherException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /** This Class interact with Pivot service for getting data. */
 public class PivotService {
 
-	@Autowired
-	private BDayConfiguration applicationConfiguration;
+	private Properties props = BDayWisherProperties.properties;
+	
 	private ObjectMapper mapper = new ObjectMapper();
 
 	/**
@@ -39,8 +32,11 @@ public class PivotService {
 	public List<BirthdayEmail> getEmployees(Date date) throws BWisherException {
 		try {
 
+			String webEndPoint = props.getProperty("service.url");
+			String locations = props.getProperty("service.parameter.location");
+			String clients = props.getProperty("service.parameter.clients");
 			// readDataFromFileSystem();
-			String webEndPoint = "http://pivot.impetus.co.in:8088/wishes/getUsers";
+			/*String webEndPoint = "http://pivot.impetus.co.in:8088/wishes/getUsers";
 			RestTemplate restTemplate = new RestTemplate();
 			ObjectNode request = mapper.createObjectNode();
 			ArrayNode locations = mapper.createArrayNode();
@@ -49,7 +45,7 @@ public class PivotService {
 			request.set("location", locations);
 			
 			ResponseEntity<ArrayNode> responseEntity = restTemplate.postForEntity(webEndPoint, request, ArrayNode.class);
-			ArrayNode jsonArray = responseEntity.getBody();
+			ArrayNode jsonArray = responseEntity.getBody();*/
 			List<BirthdayEmail> employees = new ArrayList<BirthdayEmail>();
 			/*ResponseEntity<ArrayNode> responseEntity = restTemplate.getForEntity(
 					webEndPoint, ArrayNode.class);

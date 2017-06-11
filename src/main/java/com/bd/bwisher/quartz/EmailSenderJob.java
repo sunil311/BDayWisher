@@ -39,9 +39,12 @@ public class EmailSenderJob implements Job {
     static Logger logger = LoggerFactory.getLogger(EmailSenderJob.class);
     private Properties props = BDayWisherProperties.properties;
 
-    /** Execute actual logic of job, Here it iterating over all available employees for a specific day and send birthday mail to all of them.
-     * 
-     * @param context */
+	/**
+	 * Execute actual logic of job, Here it iterating over all available
+	 * employees for a specific day and send birthday mail to all of them.
+	 * 
+	 * @param context
+	 */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -79,8 +82,10 @@ public class EmailSenderJob implements Job {
         }
     }
 
-    /** @return
-     * @throws ParseException */
+	/**
+	 * @return
+	 * @throws ParseException
+	 */
     private int getMailCounter() throws ParseException {
         Date lastSentDate = getLastSentDate();
         if (lastSentDate == null) {
@@ -100,8 +105,10 @@ public class EmailSenderJob implements Job {
         return mailCounter;
     }
 
-    /** @return
-     * @throws ParseException */
+	/**
+	 * @return
+	 * @throws ParseException
+	 */
     private Date getLastSentDate() throws ParseException {
         File flagFile = getFlagFile();
         if (flagFile != null) {
@@ -120,8 +127,10 @@ public class EmailSenderJob implements Job {
         return null;
     }
 
-    /** @throws FileNotFoundException
-     * @throws IOException */
+	/**
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
     private void updateFlagFile(Date mailDate) throws FileNotFoundException, IOException {
         Properties p = new Properties();
         DateFormat formater = new SimpleDateFormat("MM/dd/yyyy");
@@ -129,7 +138,7 @@ public class EmailSenderJob implements Job {
         p.store(new FileOutputStream(getFlagFile()), "Flag File Update for " + formater.format(mailDate));
     }
 
-    /** @return */
+	/** @return */
     private File getFlagFile() {
         String flagFile = null;
         if (SystemUtils.IS_OS_LINUX) {
@@ -141,9 +150,11 @@ public class EmailSenderJob implements Job {
         return file;
     }
 
-    /** @param mailDate2
-     * @return
-     * @throws ParseException */
+	/**
+	 * @param mailDate2
+	 * @return
+	 * @throws ParseException
+	 */
     private boolean checkMailStatus(Date mailDate) throws ParseException {
         File flagFile = getFlagFile();
         boolean mailSent = false;

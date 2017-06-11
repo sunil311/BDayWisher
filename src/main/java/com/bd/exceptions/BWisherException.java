@@ -10,7 +10,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+import com.bd.bwisher.helper.BDayWisherProperties;
+
 public class BWisherException extends RuntimeException {
+	
+	private Properties props = BDayWisherProperties.properties;
 	private static final long serialVersionUID = 1L;
 	private static Properties bdProperties;
 	static {
@@ -46,19 +50,17 @@ public class BWisherException extends RuntimeException {
 	public void sendFailureNotification(String msg, Throwable th) {
 		MimeMessagePreparator messagePreparator = getMessagePreparator(msg, th);
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setDefaultEncoding("UTF-8");
-		// Using mail from impetus.
+        mailSender.setDefaultEncoding("UTF-8"); // Using mail from impetus.
+        //mailSender.setHost("server-020.impetus.co.in");
+        mailSender.setHost(props.getProperty("mail.smtp.host"));
+        mailSender.setPort(Integer.parseInt(props.getProperty("mail.smtp.port")));
+        mailSender.setUsername(props.getProperty("mail.smtp.username"));
+        mailSender.setPassword(props.getProperty("mail.smtp.password"));
 
-		
-		  mailSender.setHost("server-020.impetus.co.in");
-		  mailSender.setPort(25);
-		  mailSender.setUsername("BDappTest@server-020.impetus.co.in");
-		  mailSender.setPassword("9c-qxGJy");
-		  
-		  Properties javaMailProperties = new Properties();
-		  javaMailProperties.put("mail.smtp.auth", "true");
-		  javaMailProperties.put("mail.transport.protocol", "smtp");
-		  javaMailProperties.put("mail.debug", "true");
+        Properties javaMailProperties = new Properties();
+        javaMailProperties.put("mail.smtp.auth", props.getProperty("mail.smtp.auth"));
+        javaMailProperties.put("mail.transport.protocol", props.getProperty("mail.transport.protocol"));
+        javaMailProperties.put("mail.debug", props.getProperty("mail.debug"));
 		 
 
 		/*mailSender.setHost("smtp.gmail.com");
@@ -71,6 +73,7 @@ public class BWisherException extends RuntimeException {
 		javaMailProperties.put("mail.transport.protocol", "smtp");
 		javaMailProperties.put("mail.debug", "true");
 		javaMailProperties.put("mail.smtp.starttls.enable", "true");*/
+        javaMailProperties.put("mail.smtp.starttls.enable", "true");
 
 		mailSender.send(messagePreparator);
 	}

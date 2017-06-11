@@ -50,6 +50,7 @@ public class BirthDayWisher {
         properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("mail/smtp.properties"));
         properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("mail/velocity.properties"));
         properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("bday.properties"));
+        properties.load(BirthDayWisher.class.getClassLoader().getResourceAsStream("bd.pivot.properties"));
         BDayWisherProperties.properties = properties;
 
     }
